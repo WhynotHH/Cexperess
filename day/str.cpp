@@ -82,43 +82,74 @@ char* mystrncpy (char* destination, const char* source,int num){
 	};//赋值表达式的返回值为左边的值既是(*destination++)；
 	return result;
 }
-//char* mystrstr(const char* destination,const char* source){
-//	while(*destination != '\0'){
-//		const char* dest = destination;
-//		const char* sour =source;
-//		while( (*dest == *sour) ){
-//			if(*sour == '\0'){
-//			break;
-//			}
-//			dest++;
-//			sour++;
-//		}
-//		//(1)*dest != *sour 
-//		//(2)*sour == '\0'
-//		
-//		if((*sour) == '\0'){//(2)*sour == '\0'
-//			if((dest != destination)){
-//				return (char*)destination;
-//			}else{
-//				 destination++;
-//			}
-//		}else{//(1)*dest != *sour 
-//			destination++;
-//		}
-//	
-//	}
-//	return NULL;
-//}
+char* mystrstr(const char* destination,const char* source){
+	while(*destination != '\0'){
+		const char* dest = destination;
+		const char* sour =source;
+		while( ( *sour != '\0') ){
+			if(*dest != *sour){
+			break;
+			}
+			dest++;
+			sour++;
+		}
+		//跳出后的两种原因
+		//(1)*dest != *sour 
+		//(2)*sour == '\0'
+		
+		if((*sour) == '\0'){//(2)*sour == '\0'
+			return (char*)destination;
+		}else{//(1)*dest != *sour 
+			destination++;
+		}
+	
+	}
+	return NULL;
+}
+typedef struct student{
+	char name[10];
+	int age;
+}student;
+void* mymemcpy ( void* destination, const void* source, size_t count ) {//memcpy 接受的是任意类型指针
+	assert(destination);
+	assert(source);
+	char* dest = (char*) destination;
+	char* sour = (char*) source;
+	for(size_t i = 0;i < count; i++){
+		*(dest+i) = *(sour + i);
+	}
+	return destination;
+}
+void* mymemmove ( void* destination, const void* source, size_t count ){
+	//memove 是为了解决 memcpy的内存重叠问题 
+	assert(destination);
+	assert(source);
+	char* dest = (char*) destination;
+	char* sour = (char*) source;
+	if(dest <= sour){ //目标空间首地址<=原空间首地址(可能前重叠，或不重叠)
+		for(size_t i = 0;i < count; i++){//从前往后拷贝
+			*(dest + i) = *(sour + i);
+		}
+	}else{//目标空间首地址>原空间首地址(可能后重叠，或不重叠)
+		for(size_t i = count - 1;i >= 0; i++){//从后往前拷贝
+			*(dest + i) = *(sour + i);
+		}
+	}
+	return destination;
+}
 int main(){
 	char str1[] = "abcd";
-	char str2[] = "a";
+	char str2[] = "aaaabc";
 	char str3[]="";
+	student s1 = {"abcd",18};
+	student s2;
 	//mystrncpy(str1,str2,2);
 	//mystrcat(str1,str2);
 	//printf("%d\n",mystrcmp1 (str1,str2));
 	//printf("%d\n",mystrcmp2 (str1,str2));
 	//printf("%s",str1);
 	//printf("%p",mystrstr(str2,str3));
+	mymemmove(&s2, &s1, sizeof(student));
 	system("pause");
 	return 0;
  }
